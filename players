@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meet the Players • Chili’s Open</title>
+  <style>
+    :root{
+      --fg:#f5f7fb;
+      --card:rgba(255,255,255,.07);
+      --border:rgba(255,255,255,.16);
+      --muted:rgba(245,247,251,.82);
+      --chip:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--fg);
+      background:
+        radial-gradient(900px 500px at 50% 18%, rgba(255,90,90,.10), transparent 60%),
+        radial-gradient(1200px 700px at 50% 86%, rgba(34,197,94,.16), transparent 65%),
+        linear-gradient(180deg,#0a1f14 0%, #0b0b0e 60%);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background:rgba(10,15,12,.78);
+      border-bottom:1px solid var(--border);
+    }
+    .bar{
+      max-width:1100px; margin:0 auto; padding:12px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .logo{font-weight:900; letter-spacing:.3px}
+    nav{display:flex; gap:10px; flex-wrap:wrap}
+    a.nav{
+      color:var(--fg); text-decoration:none; font-weight:800; font-size:14px;
+      padding:8px 10px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    a.nav:hover{border-color:rgba(255,255,255,.22)}
+    main{max-width:1100px; margin:0 auto; padding:26px 16px 40px}
+    h1{margin:0 0 8px; font-size:34px}
+    .sub{margin:0 0 18px; color:var(--muted); line-height:1.5}
+
+    .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+    @media(max-width:950px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+    }
+    .top{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+    .name{font-weight:1000; font-size:18px; letter-spacing:.2px}
+    .archetype{
+      white-space:nowrap;
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:var(--chip);
+      opacity:.95;
+    }
+    .bio{
+      margin-top:10px;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:14px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="logo">Chili’s Open 🌶️⛳️</div>
+    <nav>
+      <a class="nav" href="index.html">Home</a>
+      <a class="nav" href="game.html">Whack a Flynn</a>
+      <a class="nav" href="rules.html">Rules</a>
+      <a class="nav" href="supporters.html">Supporters</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1>Meet the Players</h1>
+  <p class="sub">Official roster. Unofficial behavior. Scouting report accuracy not guaranteed.</p>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+  const players = [
+    {
+      name: "Flynn",
+      archetype: "The Villain",
+      bio: "The corrupt king of the Chili’s Open. A product of year-round Florida golf and questionable ethics, Flynn has ruled the leaderboard with sun, reps, and zero shame. The villain of this story returns once again — but will he extend his reign, or finally be knocked off the throne he so comfortably occupies?"
+    },
+    {
+      name: "Ed",
+      archetype: "The Wild Card",
+      bio: "Impressive swing speed. Unclear destination. Ed generates power that even science struggles to explain — unfortunately, the ball’s landing spot remains a mystery. Will it split the fairway or disappear into the trees? No one knows. This year might be the year the chaos turns into glory… or at least fewer penalties."
+    },
+    {
+      name: "Ethan",
+      archetype: "Banana Specialist",
+      bio: "The most aggressive banana curve ever witnessed in the history of golf — and somehow, it works. Ethan doesn’t just play the slice, he weaponizes it. When trouble looms, the banana ball is never far behind. Will the curve once again come to the rescue at this year’s Chili’s Open?"
+    },
+    {
+      name: "Max",
+      archetype: "The High Flier",
+      bio: "Hits driver higher than most players hit a wedge. Whether it’s raw power or his elite short-game instincts leaking into the long clubs, Max sends the ball straight into orbit. If he can dial in the driver and turn height into distance, he could be a serious threat to take home the glory."
+    },
+    {
+      name: "Justin",
+      archetype: "Pay to Play",
+      bio: "A true student of the game. Justin started golfing later than the rest, but took the logical route — lessons, reps, and a commitment to improving fast. The fundamentals are there and the swing has come a long way. The real question now: how much do those classes show up when it’s time to post a score?"
+    },
+    {
+      name: "Dave",
+      archetype: "The New Recruit",
+      bio: "A fresh entry into the pay-to-play world. After years of coming up short, Dave had enough and made the switch to the dark side — where money might buy happiness (or at least a better swing). Early reports on his current form are promising, but will the investment pay off when the pressure’s on?"
+    },
+    {
+      name: "Deane",
+      archetype: "The Analyst",
+      bio: "Always knows exactly what went wrong. Was it an over-rotation? Wrist angle? Tempo? Deane has the answer before the ball even stops moving. The knowledge is there — the question is whether it helps him adjust on the fly, or sends him spiraling into his own head when it matters most."
+    },
+    {
+      name: "Davis",
+      archetype: "The Technician",
+      bio: "Pure iron striker. Plenty of distance. Zero shortage of confidence. Davis brings serious ball-striking to the table, but prefers to rely on his own judgment — even when teammates are trying to help. Will he accept guidance when it counts, or trust his instincts to point him in the right direction on the way to Chili’s glory?"
+    }
+  ];
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = players.map(p => `
+    <div class="card">
+      <div class="top">
+        <div class="name">${p.name}</div>
+        <div class="archetype">${p.archetype}</div>
+      </div>
+      <div class="bio">${p.bio}</div>
+    </div>
+  `).join("");
+</script>
+
+</body>
+</html>
