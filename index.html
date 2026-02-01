@@ -1,95 +1,214 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chili’s Open</title>
-  <style>
-    :root{
-      --bg:#0b0b0e; --fg:#f5f7fb;
-      --card:rgba(255,255,255,.06);
-      --border:rgba(255,255,255,.14);
-      --accent:#7dd3fc;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; min-height:100vh;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      background:radial-gradient(1200px 800px at 50% 30%, rgba(125,211,252,.08), transparent 60%), var(--bg);
-      color:var(--fg);
-    }
-    header{
-      position:sticky; top:0; z-index:10;
-      backdrop-filter: blur(10px);
-      background:rgba(11,11,14,.75);
-      border-bottom:1px solid var(--border);
-    }
-    .bar{
-      max-width:1100px; margin:0 auto; padding:12px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .logo{font-weight:900; letter-spacing:.3px}
-    nav{display:flex; gap:10px; flex-wrap:wrap}
-    a.nav{
-      color:var(--fg); text-decoration:none; font-weight:700; font-size:14px;
-      padding:8px 10px; border-radius:12px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    a.nav:hover{border-color:rgba(255,255,255,.22)}
-    main{max-width:1100px; margin:0 auto; padding:26px 16px 40px}
-    .hero{
-      display:grid; gap:14px;
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:18px;
-      box-shadow: 0 10px 35px rgba(0,0,0,.25);
-    }
-    h1{margin:0; font-size:40px; line-height:1.05}
-    p{margin:0; opacity:.85; line-height:1.45}
-    .countdown{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:10px;
-      margin-top:10px;
-    }
-    @media (max-width:700px){
-      h1{font-size:34px}
-      .countdown{grid-template-columns: repeat(2, minmax(0,1fr))}
-    }
-    .tile{
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:16px;
-      padding:12px;
-      text-align:center;
-    }
-    .num{font-size:30px; font-weight:900}
-    .lbl{font-size:12px; opacity:.75; font-weight:700; letter-spacing:.6px; text-transform:uppercase}
-    .ctaRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
-    .btn{
-      display:inline-block;
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:800;
-      text-decoration:none;
-      color:var(--fg);
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-    }
-    .btn:hover{border-color:rgba(255,255,255,.24)}
-    .sub{
-      font-size:14px;
-      opacity:.8;
-    }
-    .tagline{
-      margin-top:6px;
-      font-weight:700;
-      color:rgba(245,247,251,.9);
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chili’s Open</title>
+
+<style>
+:root{
+  --fg:#f5f7fb;
+  --card:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.14);
+}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--fg);
+  background:
+    radial-gradient(900px 500px at 50% 18%, rgba(255,90,90,.10), transparent 60%),
+    radial-gradient(1200px 700px at 50% 86%, rgba(34,197,94,.16), transparent 65%),
+    linear-gradient(180deg,#0a1f14 0%, #0b0b0e 60%);
+}
+
+/* Header */
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  backdrop-filter:blur(10px);
+  background:rgba(10,15,12,.78);
+  border-bottom:1px solid var(--border);
+}
+.bar{
+  max-width:1100px;
+  margin:0 auto;
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.logo{font-weight:900}
+nav{display:flex;gap:10px;flex-wrap:wrap}
+a.nav{
+  color:var(--fg);
+  text-decoration:none;
+  font-weight:800;
+  font-size:14px;
+  padding:8px 10px;
+  border-radius:12px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+}
+
+/* Layout */
+main{
+  max-width:1100px;
+  margin:0 auto;
+  padding:26px 16px 40px;
+}
+.hero{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+}
+h1{margin:0;font-size:40px}
+.sub{opacity:.85;margin-top:4px}
+.tagline{margin-top:6px;font-weight:800;opacity:.9}
+
+/* Countdown */
+.countdown{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+@media(max-width:700px){
+  .countdown{grid-template-columns:repeat(2,1fr)}
+}
+.tile{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+}
+.num{font-size:30px;font-weight:900}
+.lbl{font-size:12px;opacity:.75;font-weight:800}
+
+/* Buttons */
+.ctaRow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.btn{
+  padding:10px 12px;
+  border-radius:14px;
+  font-weight:900;
+  color:var(--fg);
+  text-decoration:none;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+}
+
+/* Teaser */
+.teaser{
+  margin-top:14px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.16);
+  background:#000;
+}
+.teaser::before{
+  content:"";
+  display:block;
+  padding-bottom:56.25%;
+}
+.thumb{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(700px 420px at 50% 30%, rgba(125,211,252,.12), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.65));
+}
+.playBtn{
+  width:72px;height:72px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.15);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+.playIcon{
+  width:0;height:0;
+  border-top:12px solid transparent;
+  border-bottom:12px solid transparent;
+  border-left:18px solid #fff;
+  margin-left:4px;
+}
+.teaserLabel{
+  position:absolute;
+  left:14px;
+  bottom:14px;
+  font-weight:900;
+  font-size:14px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(0,0,0,.4);
+  border:1px solid rgba(255,255,255,.2);
+}
+
+/* Modal */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.75);
+  z-index:1000;
+}
+.modal.open{display:flex}
+.modalCard{
+  width:min(960px,95%);
+  background:#000;
+  border-radius:18px;
+  overflow:hidden;
+}
+.modalTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  background:rgba(0,0,0,.5);
+}
+.closeBtn{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.25);
+  color:var(--fg);
+  border-radius:12px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+.playerWrap{position:relative}
+.playerWrap::before{
+  content:"";
+  display:block;
+  padding-bottom:56.25%;
+}
+.playerWrap iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+}
+</style>
 </head>
+
 <body>
 
 <header>
@@ -106,13 +225,11 @@
 
 <main>
   <section class="hero">
-    <div>
-      <h1>The Chili’s Open</h1>
-      <p class="sub">A completely unofficial tournament with extremely official vibes.</p>
-      <p class="tagline" id="tagline">Loading hype…</p>
-    </div>
+    <h1>The Chili’s Open</h1>
+    <div class="sub">A completely unofficial tournament with extremely official vibes.</div>
+    <div class="tagline" id="tagline"></div>
 
-    <div class="countdown" aria-label="countdown">
+    <div class="countdown">
       <div class="tile"><div class="num" id="days">--</div><div class="lbl">Days</div></div>
       <div class="tile"><div class="num" id="hours">--</div><div class="lbl">Hours</div></div>
       <div class="tile"><div class="num" id="mins">--</div><div class="lbl">Minutes</div></div>
@@ -122,50 +239,71 @@
     <div class="ctaRow">
       <a class="btn" href="game.html">🎮 Play Whack a Flynn</a>
       <a class="btn" href="players.html">🏌️ Meet the Players</a>
-      <a class="btn" href="rules.html">📜 Official Rules</a>
+      <a class="btn" href="rules.html">📜 Rules</a>
       <a class="btn" href="supporters.html">🌶️ Supporters</a>
     </div>
 
-    <p class="sub">Next up: we’ll embed your teaser video right here.</p>
+    <div class="teaser" id="teaser">
+      <div class="thumb">
+        <div class="playBtn"><div class="playIcon"></div></div>
+      </div>
+      <div class="teaserLabel">▶ Watch Teaser</div>
+    </div>
   </section>
 </main>
 
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modalCard">
+    <div class="modalTop">
+      <strong>Chili’s Open Teaser</strong>
+      <button class="closeBtn" id="closeBtn">✕ Close</button>
+    </div>
+    <div class="playerWrap" id="playerMount"></div>
+  </div>
+</div>
+
 <script>
-  // Tournament start: May 22, 2026 @ 9:00 AM (local time on the visitor's device)
-  const TOURNAMENT_ISO_LOCAL = "2026-05-22T09:00:00";
+const TAGLINES=[
+  "Accuracy optional. Confidence required.",
+  "Not PGA sanctioned. Spiritually sanctioned.",
+  "Hydration provided by salsa.",
+  "One tournament. Infinite excuses."
+];
+document.getElementById("tagline").textContent =
+  TAGLINES[Math.floor(Math.random()*TAGLINES.length)];
 
-  const el = (id) => document.getElementById(id);
+// Countdown
+const TARGET = new Date("2026-05-22T09:00:00");
+function tick(){
+  const now=new Date();
+  let d=Math.max(0,TARGET-now);
+  const s=Math.floor(d/1000);
+  days.textContent=Math.floor(s/86400);
+  hours.textContent=String(Math.floor(s%86400/3600)).padStart(2,"0");
+  mins.textContent=String(Math.floor(s%3600/60)).padStart(2,"0");
+  secs.textContent=String(s%60).padStart(2,"0");
+}
+tick(); setInterval(tick,1000);
 
-  const taglines = [
-    "Time until the first questionable tee shot.",
-    "Not PGA sanctioned. Spiritually sanctioned.",
-    "Golf. Margaritas. Regret.",
-    "Accuracy optional. Confidence required.",
-    "Hydration station: salsa."
-  ];
-  el("tagline").textContent = taglines[Math.floor(Math.random() * taglines.length)];
+// Modal logic
+const VIDEO_ID="UQmpPK5EruI";
+const modal=document.getElementById("modal");
+const mount=document.getElementById("playerMount");
 
-  function tick(){
-    const target = new Date(TOURNAMENT_ISO_LOCAL);
-    const now = new Date();
-    let diff = target - now;
-
-    if (diff < 0) diff = 0;
-
-    const s = Math.floor(diff / 1000);
-    const days = Math.floor(s / 86400);
-    const hours = Math.floor((s % 86400) / 3600);
-    const mins = Math.floor((s % 3600) / 60);
-    const secs = s % 60;
-
-    el("days").textContent = String(days);
-    el("hours").textContent = String(hours).padStart(2,"0");
-    el("mins").textContent = String(mins).padStart(2,"0");
-    el("secs").textContent = String(secs).padStart(2,"0");
-  }
-
-  tick();
-  setInterval(tick, 1000);
+document.getElementById("teaser").onclick=()=>{
+  mount.innerHTML=
+    `<iframe src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&rel=0"
+      allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  modal.classList.add("open");
+  document.body.style.overflow="hidden";
+};
+document.getElementById("closeBtn").onclick=()=>{
+  modal.classList.remove("open");
+  mount.innerHTML="";
+  document.body.style.overflow="";
+};
+modal.onclick=(e)=>{ if(e.target===modal) closeBtn.click(); };
 </script>
 
 </body>
