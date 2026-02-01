@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rules • Chili’s Open</title>
+
+  <style>
+    :root{
+      --fg:#f5f7fb;
+      --card:rgba(255,255,255,.07);
+      --border:rgba(255,255,255,.16);
+      --muted:rgba(245,247,251,.82);
+      --chip:rgba(255,255,255,.08);
+      --good:#34d399;
+      --bad:#fb7185;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--fg);
+      background:
+        radial-gradient(900px 500px at 50% 18%, rgba(255,90,90,.10), transparent 60%),
+        radial-gradient(1200px 700px at 50% 86%, rgba(34,197,94,.16), transparent 65%),
+        linear-gradient(180deg,#0a1f14 0%, #0b0b0e 60%);
+    }
+
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background:rgba(10,15,12,.78);
+      border-bottom:1px solid var(--border);
+    }
+    .bar{
+      max-width:1100px; margin:0 auto; padding:12px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .logo{font-weight:900; letter-spacing:.3px}
+    nav{display:flex; gap:10px; flex-wrap:wrap}
+    a.nav{
+      color:var(--fg); text-decoration:none; font-weight:800; font-size:14px;
+      padding:8px 10px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    a.nav:hover{border-color:rgba(255,255,255,.22)}
+
+    main{max-width:980px; margin:0 auto; padding:26px 16px 40px}
+    h1{margin:0 0 6px; font-size:34px}
+    .sub{margin:0 0 16px; color:var(--muted); line-height:1.5}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin: 10px 0 16px;
+    }
+    .btn{
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:900;
+      color:var(--fg);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .btn:hover{border-color:rgba(255,255,255,.24)}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin:12px 0;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+    }
+    .row{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom:8px;
+    }
+    .row h2{margin:0; font-size:18px}
+    .chip{
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:var(--chip);
+      opacity:.95;
+      white-space:nowrap;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media(max-width:800px){
+      .grid2{grid-template-columns:1fr}
+    }
+
+    ul{margin:8px 0 0 18px; color:var(--muted); line-height:1.55}
+    li{margin:6px 0}
+
+    .tableWrap{
+      margin-top:10px;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    th, td{
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      text-align:left;
+      color:var(--muted);
+    }
+    th{
+      color:var(--fg);
+      background:rgba(255,255,255,.06);
+      font-weight:1000;
+    }
+    tr:last-child td{border-bottom:none}
+    .cap{
+      display:inline-block;
+      margin-top:10px;
+      font-weight:900;
+      font-size:13px;
+      color:rgba(245,247,251,.9);
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+    }
+
+    /* Printable Rules Card */
+    .printCard{
+      display:none;
+    }
+    .printCard .pwrap{
+      max-width:900px;
+      margin:0 auto;
+      padding:12px;
+      color:#111;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+    .printCard h1{
+      font-size:22px;
+      margin:0 0 6px;
+      color:#111;
+    }
+    .printCard .meta{
+      font-size:12px;
+      margin:0 0 10px;
+      color:#333;
+    }
+    .printCard .box{
+      border:1px solid #222;
+      border-radius:10px;
+      padding:10px;
+      margin:10px 0;
+    }
+    .printCard h2{
+      font-size:14px;
+      margin:0 0 6px;
+      color:#111;
+    }
+    .printCard ul{
+      margin:6px 0 0 16px;
+      color:#111;
+      line-height:1.35;
+      font-size:12px;
+    }
+    .printCard .miniTable{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      margin-top:6px;
+    }
+    .printCard .miniTable th,
+    .printCard .miniTable td{
+      border:1px solid #222;
+      padding:6px 8px;
+      text-align:left;
+      color:#111;
+    }
+    .printCard .miniTable th{
+      background:#f1f1f1;
+      font-weight:800;
+    }
+    .printCard .footer{
+      font-size:11px;
+      color:#333;
+      margin-top:10px;
+    }
+
+    /* PRINT MODE: show only the print card */
+    @media print{
+      body{
+        background:#fff !important;
+        color:#111 !important;
+      }
+      header, main{ display:none !important; }
+      .printCard{ display:block !important; }
+      @page{ margin:0.5in; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="bar">
+    <div class="logo">Chili’s Open 🌶️⛳️</div>
+    <nav>
+      <a class="nav" href="index.html">Home</a>
+      <a class="nav" href="game.html">Whack a Flynn</a>
+      <a class="nav" href="players.html">Meet the Players</a>
+      <a class="nav" href="supporters.html">Supporters</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1>Official Rules</h1>
+  <p class="sub">
+    Two teams of four. Day 1 earns a small advantage. Day 2 decides it.
+    No mulligans. No gimmes. Every putt matters.
+  </p>
+
+  <div class="actions">
+    <button class="btn" id="printBtn">🖨️ Print Rules Card</button>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h2>Teams</h2>
+      <div class="chip">2 teams of 4</div>
+    </div>
+    <ul>
+      <li><strong>Team A</strong> = 4 players</li>
+      <li><strong>Team B</strong> = 4 players</li>
+      <li>Day 1 front 9: each team sets <strong>Pair 1</strong> and <strong>Pair 2</strong> before Hole 1.</li>
+      <li>Day 2: teams <strong>re-draft pairs</strong> for scramble.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h2>Day 1 Format</h2>
+      <div class="chip">18 holes</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card" style="margin:0;">
+        <div class="row">
+          <h2>Front 9 — Alternate Shot (2v2)</h2>
+          <div class="chip">2 matches</div>
+        </div>
+        <ul>
+          <li>Match 1: Team A Pair 1 vs Team B Pair 1</li>
+          <li>Match 2: Team A Pair 2 vs Team B Pair 2</li>
+          <li>Each match = <strong>1 point</strong>. Tie = <strong>0.5 / 0.5</strong>.</li>
+          <li><strong>Alternate Shot Rule:</strong> both partners tee off on Hole 1 → choose best tee shot → the player who didn’t hit it plays next → then alternate until holed.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="margin:0;">
+        <div class="row">
+          <h2>Back 9 — Singles (1v1)</h2>
+          <div class="chip">4 matches</div>
+        </div>
+        <ul>
+          <li>Four total matches (each player plays 1 match)</li>
+          <li>Each match = <strong>1 point</strong>. Tie = <strong>0.5 / 0.5</strong>.</li>
+          <li><strong>Total Day 1 points available:</strong> 6</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h2>Day 1 → Day 2 Advantage</h2>
+      <div class="chip">capped</div>
+    </div>
+    <p class="sub" style="margin:0 0 10px;">
+      Convert the Day 1 point differential into a small Day 2 scramble advantage.
+      The maximum advantage is capped so Day 2 is never dead.
+    </p>
+
+    <div class="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Day 1 Point Differential</th>
+            <th>Day 2 Stroke Advantage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>Even</td></tr>
+          <tr><td>1</td><td>1 stroke</td></tr>
+          <tr><td>2</td><td>2 strokes</td></tr>
+          <tr><td>3</td><td>3 strokes</td></tr>
+          <tr><td>4+</td><td><strong>4 strokes max (cap)</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cap">🔒 Stroke advantage is capped at 4.</div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h2>Day 2 Format</h2>
+      <div class="chip">18-hole scramble</div>
+    </div>
+    <ul>
+      <li>Each team <strong>re-drafts pairs</strong> (two 2-person teams per side).</li>
+      <li>Each pair plays an 18-hole scramble and posts a score.</li>
+      <li>Add the two scramble scores together = <strong>team total</strong>.</li>
+      <li>Apply Day 1 stroke advantage to the team total.</li>
+    </ul>
+
+    <div class="card" style="margin:12px 0 0;">
+      <div class="row">
+        <h2>Example</h2>
+        <div class="chip">how it works</div>
+      </div>
+      <ul>
+        <li>Day 1: Team 1 wins <strong>4–2</strong> → differential <strong>+2</strong> → Team 1 gets <strong>2 strokes</strong></li>
+        <li>Day 2: Team 1 = 86 + 89 = 175; Team 2 = 87 + 87 = 174</li>
+        <li>Adjusted: Team 1 = <strong>173</strong>; Team 2 = <strong>174</strong> → Team 1 wins by 1</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h2>Locked Rules</h2>
+      <div class="chip">no debate</div>
+    </div>
+    <ul>
+      <li><strong>No mulligans</strong></li>
+      <li><strong>No gimmes</strong> — every putt must be holed</li>
+      <li>Lost ball / OB = <strong>stroke + distance</strong></li>
+      <li>Free relief allowed from cart paths, roots, rocks, or unsafe lies (nearest reasonable relief)</li>
+      <li>Pace matters — pick up at double par if needed to keep moving</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h2>Tie-Breaker</h2>
+      <div class="chip">playoff</div>
+    </div>
+    <ul>
+      <li>If the tournament is tied after Day 2 adjustments: <strong>one-hole scramble playoff</strong></li>
+      <li>Each team chooses <strong>any two players</strong> for the playoff hole</li>
+      <li>If still tied: <strong>closest-to-the-pin</strong> (one shooter per team)</li>
+    </ul>
+  </div>
+</main>
+
+<!-- PRINT-ONLY RULES CARD -->
+<section class="printCard">
+  <div class="pwrap">
+    <h1>Chili’s Open — Rules Card</h1>
+    <div class="meta">
+      Format: Two Teams of Four • No Mulligans • No Gimmes • Re-draft Day 2 • Advantage capped at 4 strokes
+    </div>
+
+    <div class="box">
+      <h2>Day 1 (18 holes) — Points</h2>
+      <ul>
+        <li><strong>Front 9:</strong> Alternate Shot (2v2) — 2 matches (1 point each, tie 0.5)</li>
+        <li><strong>Alt Shot:</strong> both tee off on Hole 1 → choose best tee → other hits next → alternate until holed</li>
+        <li><strong>Back 9:</strong> Singles (1v1) — 4 matches (1 point each, tie 0.5)</li>
+        <li><strong>Total points available:</strong> 6</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h2>Day 1 → Day 2 Advantage</h2>
+      <table class="miniTable">
+        <thead>
+          <tr>
+            <th>Point Diff</th>
+            <th>Strokes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>Even</td></tr>
+          <tr><td>1</td><td>+1</td></tr>
+          <tr><td>2</td><td>+2</td></tr>
+          <tr><td>3</td><td>+3</td></tr>
+          <tr><td>4+</td><td>+4 (cap)</td></tr>
+        </tbody>
+      </table>
+      <div class="footer">Advantage goes to the Day 1 winner. Max advantage = 4 strokes.</div>
+    </div>
+
+    <div class="box">
+      <h2>Day 2 (18 holes) — Scramble</h2>
+      <ul>
+        <li><strong>Re-draft pairs</strong> (two 2-man teams per side)</li>
+        <li>Each pair posts an 18-hole scramble score</li>
+        <li>Add both scramble scores = team total</li>
+        <li>Apply the Day 1 stroke advantage</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h2>Locked Rules</h2>
+      <ul>
+        <li><strong>No mulligans</strong></li>
+        <li><strong>No gimmes</strong> — hole everything</li>
+        <li>Lost ball / OB = <strong>stroke + distance</strong></li>
+        <li>Free relief from cart paths/roots/rocks/unsafe lies</li>
+        <li>Pace rule: pick up at double par if needed</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h2>Tie-Breaker</h2>
+      <ul>
+        <li>One-hole scramble playoff (each team chooses any 2 players)</li>
+        <li>If still tied: closest-to-pin (1 shooter per team)</li>
+      </ul>
+    </div>
+
+    <div class="footer">If an argument lasts longer than 30 seconds, the group decides and everyone moves on.</div>
+  </div>
+</section>
+
+<script>
+  document.getElementById("printBtn").addEventListener("click", () => {
+    window.print();
+  });
+</script>
+
+</body>
+</html>
