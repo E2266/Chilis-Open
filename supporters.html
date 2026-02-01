@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Supporters • Chili’s Open</title>
+
+  <style>
+    :root{
+      --fg:#f5f7fb;
+      --card:rgba(255,255,255,.07);
+      --border:rgba(255,255,255,.16);
+      --muted:rgba(245,247,251,.82);
+      --chip:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--fg);
+      background:
+        radial-gradient(900px 500px at 50% 18%, rgba(255,90,90,.10), transparent 60%),
+        radial-gradient(1200px 700px at 50% 86%, rgba(34,197,94,.16), transparent 65%),
+        linear-gradient(180deg,#0a1f14 0%, #0b0b0e 60%);
+    }
+
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background:rgba(10,15,12,.78);
+      border-bottom:1px solid var(--border);
+    }
+    .bar{
+      max-width:1100px; margin:0 auto; padding:12px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .logo{font-weight:900; letter-spacing:.3px}
+    nav{display:flex; gap:10px; flex-wrap:wrap}
+    a.nav{
+      color:var(--fg); text-decoration:none; font-weight:800; font-size:14px;
+      padding:8px 10px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    main{max-width:1100px; margin:0 auto; padding:26px 16px 40px}
+    h1{margin:0 0 6px; font-size:34px}
+    .sub{margin:0 0 16px; color:var(--muted); line-height:1.5}
+
+    .disclaimer{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:14px;
+      margin-bottom:16px;
+      font-size:14px;
+      line-height:1.5;
+      color:rgba(245,247,251,.85);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+    }
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .name{
+      font-weight:1000;
+      font-size:18px;
+    }
+    .chip{
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:var(--chip);
+      opacity:.95;
+      white-space:nowrap;
+    }
+    .blurb{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="logo">Chili’s Open 🌶️⛳️</div>
+    <nav>
+      <a class="nav" href="index.html">Home</a>
+      <a class="nav" href="game.html">Whack a Flynn</a>
+      <a class="nav" href="players.html">Meet the Players</a>
+      <a class="nav" href="rules.html">Rules</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1>Supporters</h1>
+  <p class="sub">These companies do <strong>not</strong> sponsor the Chili’s Open.  
+  We support them. Emotionally. Financially. Repeatedly.</p>
+
+  <div class="disclaimer">
+    ⚠️ <strong>Important:</strong> None of the brands listed below have any affiliation with this tournament.  
+    They did not ask to be here. We simply refuse to stop buying their products.
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Bud Light</div>
+        <div class="chip">Hydration*</div>
+      </div>
+      <div class="blurb">
+        Cold. Reliable. Questionable decisions start here.
+        Official beverage of “I’m good for one more hole.”
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Tito’s Vodka</div>
+        <div class="chip">Confidence</div>
+      </div>
+      <div class="blurb">
+        For shots taken both on and off the course.
+        Helps lower nerves, raise volume, and improve swing thoughts (allegedly).
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Chili’s</div>
+        <div class="chip">Official Vibe</div>
+      </div>
+      <div class="blurb">
+        Where victories are celebrated, losses are processed,
+        and the phrase “we should’ve played better” is said repeatedly.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Ibuprofen</div>
+        <div class="chip">Recovery Plan</div>
+      </div>
+      <div class="blurb">
+        The backbone of the post-round stretching program.
+        If it works, great. If not, take two more.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Golf Carts</div>
+        <div class="chip">Transportation</div>
+      </div>
+      <div class="blurb">
+        True workhorses of the tournament.
+        Please respect curbs, signs, and basic physics.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Sunscreen</div>
+        <div class="chip">Defense</div>
+      </div>
+      <div class="blurb">
+        Because “I didn’t think it was that sunny” is not a medical excuse.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Breakfast Sandwiches</div>
+        <div class="chip">False Hope</div>
+      </div>
+      <div class="blurb">
+        Consumed with the belief that today is different.
+        Often proven wrong by Hole 3.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">Range Balls</div>
+        <div class="chip">Optimism</div>
+      </div>
+      <div class="blurb">
+        Used pre-round to convince ourselves we have it all figured out.
+        Immediately forgotten once the round starts.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="name">The Beverage Cart</div>
+        <div class="chip">Momentum Shift</div>
+      </div>
+      <div class="blurb">
+        Single-handedly responsible for multiple comebacks,
+        collapses, and bold strategic decisions.
+      </div>
+    </div>
+
+  </div>
+</main>
+
+</body>
+</html>
