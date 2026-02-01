@@ -1,473 +1,327 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Whack a Flynn</title>
-  <style>
-    :root{
-      --bg:#0b0b0e; --fg:#f5f7fb;
-      --card:rgba(255,255,255,.06);
-      --border:rgba(255,255,255,.14);
-      --accent:#7dd3fc;
-      --danger:#fb7185;
-      --good:#34d399;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; min-height:100vh;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      background:radial-gradient(1200px 800px at 50% 30%, rgba(125,211,252,.08), transparent 60%), var(--bg);
-      color:var(--fg);
-    }
-    header{
-      position:sticky; top:0; z-index:10;
-      backdrop-filter: blur(10px);
-      background:rgba(11,11,14,.75);
-      border-bottom:1px solid var(--border);
-    }
-    .bar{
-      max-width:1100px; margin:0 auto; padding:12px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .title{
-      display:flex; align-items:baseline; gap:10px;
-      font-weight:800; letter-spacing:.2px;
-    }
-    .title span{opacity:.75; font-weight:600; font-size:14px}
-    .hud{
-      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-      font-weight:700;
-    }
-    .pill{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:8px 12px;
-      display:flex; align-items:center; gap:8px;
-      font-size:14px;
-    }
-    .btn{
-      border:none; cursor:pointer;
-      background:rgba(255,255,255,.09);
-      border:1px solid var(--border);
-      color:var(--fg);
-      padding:9px 12px;
-      border-radius:12px;
-      font-weight:700;
-    }
-    .btn:hover{border-color:rgba(255,255,255,.22)}
-    .btn:active{transform:translateY(1px)}
-    main{max-width:1100px; margin:0 auto; padding:18px 16px 28px}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:16px;
-    }
-    @media (max-width: 900px){
-      .grid{grid-template-columns:1fr}
-    }
-    .panel{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-      box-shadow: 0 10px 35px rgba(0,0,0,.25);
-    }
-    .arena{
-      position:relative;
-      height:520px;
-      border-radius:16px;
-      overflow:hidden;
-      border:1px dashed rgba(255,255,255,.18);
-      background:
-        radial-gradient(900px 420px at 50% 70%, rgba(52,211,153,.10), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-    }
-    @media (max-width: 900px){
-      .arena{height:480px}
-    }
-    .note{
-      font-size:14px;
-      opacity:.85;
-      line-height:1.45;
-    }
-    .hearts{letter-spacing:2px}
-    .hearts .dead{opacity:.25}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Whack a Flynn</title>
 
-    /* Flynn target */
-    .flynn{
-      position:absolute;
-      width:110px; height:110px;
-      border-radius:22px;
-      display:grid; place-items:center;
-      user-select:none;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.20);
-      background: rgba(255,255,255,.10);
-      transform: translate(-50%, -50%) scale(.9);
-      opacity:0;
-      transition: opacity .12s ease, transform .12s ease;
-      box-shadow: 0 14px 30px rgba(0,0,0,.25);
-      touch-action: manipulation;
-    }
-    .flynn.show{
-      opacity:1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    .flynn .emoji{font-size:44px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));}
-    .flynn .label{
-      position:absolute;
-      bottom:-10px;
-      background:rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.18);
-      padding:3px 8px;
-      border-radius:999px;
-      font-size:12px;
-      opacity:.9;
-    }
+<style>
+:root{
+  --fg:#f5f7fb;
+  --card:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.18);
+  --good:#34d399;
+  --bad:#fb7185;
+}
 
-    /* Feedback */
-    .toast{
-      margin-top:10px;
-      font-size:14px;
-      opacity:.85;
-      min-height:20px;
-    }
-    .shake{
-      animation: shake .25s linear;
-    }
-    @keyframes shake{
-      0%{transform:translateX(0)}
-      25%{transform:translateX(-6px)}
-      50%{transform:translateX(6px)}
-      75%{transform:translateX(-4px)}
-      100%{transform:translateX(0)}
-    }
+*{box-sizing:border-box}
 
-    /* Overlay */
-    .overlay{
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      background:rgba(11,11,14,.72);
-      backdrop-filter: blur(8px);
-      padding:18px;
-    }
-    .card{
-      max-width:420px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:18px;
-      padding:18px;
-      text-align:center;
-    }
-    .card h2{margin:0 0 8px}
-    .card p{margin:0 0 14px; opacity:.85}
-    .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-    a.link{color:var(--accent); text-decoration:none; font-weight:700}
-  </style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--fg);
+
+  background:
+    radial-gradient(900px 500px at 50% 20%, rgba(255,90,90,.10), transparent 60%),
+    radial-gradient(1200px 700px at 50% 85%, rgba(34,197,94,.18), transparent 65%),
+    linear-gradient(180deg, #0a1f14 0%, #0b0b0e 60%);
+}
+
+/* Header */
+header{
+  position:sticky;
+  top:0;
+  backdrop-filter: blur(10px);
+  background:rgba(10,15,12,.75);
+  border-bottom:1px solid var(--border);
+  z-index:10;
+}
+
+.bar{
+  max-width:1100px;
+  margin:0 auto;
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.title{
+  font-weight:900;
+  letter-spacing:.4px;
+}
+
+.hud{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  font-weight:800;
+  font-size:14px;
+}
+
+.pill{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:6px 10px;
+}
+
+button{
+  cursor:pointer;
+  background:rgba(255,255,255,.12);
+  border:1px solid var(--border);
+  color:var(--fg);
+  border-radius:12px;
+  padding:8px 12px;
+  font-weight:800;
+}
+
+button:active{transform:translateY(1px)}
+
+main{
+  max-width:1100px;
+  margin:0 auto;
+  padding:20px 16px 40px;
+}
+
+/* Arena */
+.arena{
+  position:relative;
+  height:520px;
+  border-radius:18px;
+  background:rgba(0,0,0,.35);
+  border:1px dashed rgba(255,255,255,.25);
+  overflow:hidden;
+}
+
+@media(max-width:768px){
+  .arena{height:480px}
+}
+
+/* Flynn */
+.flynn{
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:24px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 15px 30px rgba(0,0,0,.4);
+  cursor:pointer;
+  user-select:none;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.9);
+  transition:.12s ease;
+  touch-action:manipulation;
+}
+
+.flynn.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+
+.flynn span{
+  font-size:48px;
+}
+
+/* Overlay */
+.overlay{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(6px);
+}
+
+.card{
+  background:rgba(255,255,255,.1);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+  text-align:center;
+  max-width:420px;
+}
+
+.card h2{margin:0 0 8px}
+.card p{margin:0 0 12px;opacity:.85}
+
+.toast{
+  margin-top:12px;
+  font-weight:700;
+}
+
+/* Shake */
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+.shake{animation:shake .25s linear}
+</style>
 </head>
+
 <body>
 
 <header>
   <div class="bar">
-    <div class="title">
-      Whack a Flynn <span>Official training mode</span>
-    </div>
+    <div class="title">Whack a Flynn 🎯</div>
     <div class="hud">
       <div class="pill">Score: <span id="score">0</span></div>
-      <div class="pill">Lives:
-        <span id="lives" class="hearts" aria-label="lives"></span>
-      </div>
-      <button class="btn" id="startBtn">Start</button>
-      <button class="btn" id="pauseBtn" disabled>Pause</button>
-      <button class="btn" id="resetBtn">Reset</button>
+      <div class="pill">Lives: <span id="lives">❤️❤️❤️</span></div>
+      <button id="startBtn">Start</button>
+      <button id="resetBtn">Reset</button>
     </div>
   </div>
 </header>
 
 <main>
-  <div class="grid">
-    <section class="panel">
-      <div class="arena" id="arena" aria-label="game arena">
-        <div class="flynn" id="flynn" role="button" aria-label="Flynn target">
-          <div class="emoji">🧑‍🦲</div>
-          <div class="label">Flynn</div>
-        </div>
+  <div class="arena" id="arena">
+    <div class="flynn" id="flynn">
+      <span>🧑‍🦲</span>
+    </div>
 
-        <div class="overlay" id="overlay">
-          <div class="card">
-            <h2>3 misses and you’re done</h2>
-            <p>Miss = Flynn appears and disappears without getting whacked.<br>Clicks on the grass don’t count.</p>
-            <div class="row">
-              <button class="btn" id="overlayStart">▶️ Start Game</button>
-              <a class="link" href="index.html">Back to Home</a>
-            </div>
-          </div>
-        </div>
+    <div class="overlay" id="overlay">
+      <div class="card">
+        <h2>3 Misses = Game Over</h2>
+        <p>Miss = Flynn disappears without being whacked.</p>
+        <button id="overlayStart">▶ Start Game</button><br><br>
+        <a href="index.html" style="color:#7dd3fc;font-weight:800;text-decoration:none;">Back to Home</a>
       </div>
-      <div class="toast" id="toast"></div>
-    </section>
-
-    <aside class="panel">
-      <h3 style="margin:0 0 8px;">How it works</h3>
-      <p class="note" style="margin-top:0;">
-        Flynn pops up randomly. Whack him in time to score.
-        If he disappears untouched, you lose a life. Lose 3 lives → game over.
-      </p>
-
-      <div class="panel" style="margin-top:12px;">
-        <h4 style="margin:0 0 8px;">Difficulty</h4>
-        <p class="note" style="margin:0;">
-          Gets faster as your score rises. You’ll start to feel it around 8–12 points.
-        </p>
-      </div>
-
-      <div class="panel" style="margin-top:12px;">
-        <h4 style="margin:0 0 8px;">Pro tip</h4>
-        <p class="note" style="margin:0;">
-          Don’t chase. Wait for the pop-up and strike.
-        </p>
-      </div>
-    </aside>
+    </div>
   </div>
+
+  <div class="toast" id="toast"></div>
 </main>
 
 <script>
-  // ====== Game State ======
-  const scoreEl = document.getElementById('score');
-  const livesEl = document.getElementById('lives');
-  const toastEl = document.getElementById('toast');
-  const arena = document.getElementById('arena');
-  const flynn = document.getElementById('flynn');
+const flynn = document.getElementById("flynn");
+const arena = document.getElementById("arena");
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
+const toast = document.getElementById("toast");
+const overlay = document.getElementById("overlay");
 
-  const overlay = document.getElementById('overlay');
-  const overlayStart = document.getElementById('overlayStart');
+let score = 0;
+let lives = 3;
+let running = false;
+let whacked = false;
+let showTimer, hideTimer;
 
-  const startBtn = document.getElementById('startBtn');
-  const pauseBtn = document.getElementById('pauseBtn');
-  const resetBtn = document.getElementById('resetBtn');
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-  let score = 0;
-  let lives = 3;
-  let running = false;
-  let paused = false;
+function difficultyParams(){
+  const s = score;
+  let visibleMs, gapMs;
 
-  // timing
-  let showTimer = null;
-  let hideTimer = null;
+  if (s < 20) {
+    visibleMs = 1100 - s * 12;
+    gapMs = 820 - s * 10;
+  } else if (s < 60) {
+    visibleMs = 860 - (s - 20) * 7;
+    gapMs = 620 - (s - 20) * 5;
+  } else if (s < 100) {
+    visibleMs = 580 - (s - 60) * 4;
+    gapMs = 420 - (s - 60) * 3;
+  } else {
+    visibleMs = 420 - (s - 100) * 2;
+    gapMs = 300 - (s - 100) * 2;
+  }
 
-  // used to determine if a popup was whacked before it disappeared
-  let currentPopupWhacked = false;
+  return {
+    visibleMs: clamp(visibleMs,260,1200),
+    gapMs: clamp(gapMs,180,900)
+  };
+}
 
-  function renderLives() {
-    const hearts = [];
-    for (let i = 0; i < 3; i++) {
-      hearts.push(`<span class="${i < lives ? '' : 'dead'}">❤️</span>`);
+function updateLives(){
+  livesEl.textContent = "❤️❤️❤️".slice(0,lives*2);
+}
+
+function randomPos(){
+  const r = arena.getBoundingClientRect();
+  const pad = 80;
+  return {
+    x: pad + Math.random()*(r.width-pad*2),
+    y: pad + Math.random()*(r.height-pad*2)
+  };
+}
+
+function showFlynn(){
+  if(!running) return;
+  whacked = false;
+
+  const {visibleMs} = difficultyParams();
+  const {x,y} = randomPos();
+
+  flynn.style.left = x+"px";
+  flynn.style.top = y+"px";
+  flynn.classList.add("show");
+
+  hideTimer = setTimeout(()=>{
+    flynn.classList.remove("show");
+    if(!whacked){
+      lives--;
+      updateLives();
+      arena.classList.add("shake");
+      setTimeout(()=>arena.classList.remove("shake"),250);
+      toast.textContent = "Missed!";
+      toast.style.color = "var(--bad)";
+      if(lives<=0){endGame();return;}
     }
-    livesEl.innerHTML = hearts.join('');
-  }
-
-  function setToast(msg, kind = '') {
-    toastEl.textContent = msg;
-    toastEl.style.color = kind === 'bad' ? 'var(--danger)' : (kind === 'good' ? 'var(--good)' : 'rgba(245,247,251,.85)');
-  }
-
-  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-  function difficultyParams() {
-    // As score increases, Flynn appears more frequently and stays up for less time
-    const s = score;
-
-    // How long Flynn stays visible (ms)
-    const visibleMs = clamp(900 - s * 35, 320, 900);
-
-    // Delay between appearances (ms)
-    const gapMs = clamp(650 - s * 18, 220, 650);
-
-    return { visibleMs, gapMs };
-  }
-
-  function randomPosition() {
-    const rect = arena.getBoundingClientRect();
-
-    // keep inside bounds with padding so it doesn't clip
-    const pad = 80;
-    const x = pad + Math.random() * (rect.width - pad * 2);
-    const y = pad + Math.random() * (rect.height - pad * 2);
-
-    return { x, y };
-  }
-
-  function showFlynn() {
-    if (!running || paused) return;
-
-    currentPopupWhacked = false;
-
-    const { visibleMs } = difficultyParams();
-    const { x, y } = randomPosition();
-
-    flynn.style.left = `${x}px`;
-    flynn.style.top = `${y}px`;
-    flynn.classList.add('show');
-
-    // If not whacked before hide, it's a miss (Option A)
-    hideTimer = setTimeout(() => {
-      flynn.classList.remove('show');
-
-      if (!currentPopupWhacked) {
-        lives -= 1;
-        renderLives();
-
-        arena.classList.remove('shake');
-        void arena.offsetWidth; // reset animation
-        arena.classList.add('shake');
-
-        setToast(`Missed! Flynn escaped. Lives left: ${lives}`, 'bad');
-
-        if (lives <= 0) {
-          endGame();
-          return;
-        }
-      }
-      scheduleNext();
-    }, visibleMs);
-  }
-
-  function scheduleNext() {
-    if (!running || paused) return;
-    const { gapMs } = difficultyParams();
-    showTimer = setTimeout(showFlynn, gapMs);
-  }
-
-  function startGame() {
-    if (running) return;
-
-    running = true;
-    paused = false;
-    startBtn.disabled = true;
-    pauseBtn.disabled = false;
-    pauseBtn.textContent = 'Pause';
-
-    overlay.style.display = 'none';
-    setToast('Whack Flynn before he disappears. Good luck.', '');
-
     scheduleNext();
-  }
+  },visibleMs);
+}
 
-  function pauseGame() {
-    if (!running) return;
+function scheduleNext(){
+  const {gapMs} = difficultyParams();
+  showTimer = setTimeout(showFlynn,gapMs);
+}
 
-    paused = !paused;
-    pauseBtn.textContent = paused ? 'Resume' : 'Pause';
-    setToast(paused ? 'Paused. Flynn is catching his breath.' : 'Back to business.', '');
+function startGame(){
+  score=0; lives=3;
+  scoreEl.textContent=0;
+  updateLives();
+  toast.textContent="";
+  overlay.style.display="none";
+  running=true;
+  scheduleNext();
+}
 
-    clearTimeout(showTimer);
-    clearTimeout(hideTimer);
+function endGame(){
+  running=false;
+  clearTimeout(showTimer);
+  clearTimeout(hideTimer);
+  overlay.innerHTML = `
+    <div class="card">
+      <h2>Game Over</h2>
+      <p>Final Score: <strong>${score}</strong></p>
+      <button onclick="location.reload()">🔁 Play Again</button>
+    </div>`;
+  overlay.style.display="grid";
+}
 
-    if (!paused) {
-      // hide any visible Flynn and continue
-      flynn.classList.remove('show');
-      scheduleNext();
-    }
-  }
+flynn.addEventListener("click",()=>{
+  if(!running || !flynn.classList.contains("show")) return;
+  whacked=true;
+  score++;
+  scoreEl.textContent=score;
+  toast.textContent="Whacked!";
+  toast.style.color="var(--good)";
+  flynn.classList.remove("show");
+  clearTimeout(hideTimer);
+  scheduleNext();
+});
 
-  function resetGame() {
-    clearTimeout(showTimer);
-    clearTimeout(hideTimer);
-
-    score = 0;
-    lives = 3;
-    running = false;
-    paused = false;
-    currentPopupWhacked = false;
-
-    scoreEl.textContent = score;
-    renderLives();
-    flynn.classList.remove('show');
-
-    startBtn.disabled = false;
-    pauseBtn.disabled = true;
-    pauseBtn.textContent = 'Pause';
-
-    overlay.style.display = 'grid';
-    setToast('');
-  }
-
-  function endGame() {
-    clearTimeout(showTimer);
-    clearTimeout(hideTimer);
-
-    running = false;
-    paused = false;
-    flynn.classList.remove('show');
-
-    startBtn.disabled = false;
-    pauseBtn.disabled = true;
-    pauseBtn.textContent = 'Pause';
-
-    // Roast message by score
-    let roast = '';
-    if (score < 5) roast = 'That was… a warm-up. Maybe.';
-    else if (score < 12) roast = 'Respectable. Flynn is mildly concerned.';
-    else if (score < 20) roast = 'Okay you’ve got hands. Flynn is sweating.';
-    else roast = 'ELITE. Flynn just requested a rules committee meeting.';
-
-    overlay.innerHTML = `
-      <div class="card">
-        <h2>Game Over</h2>
-        <p><strong>Final Score:</strong> ${score}<br>${roast}</p>
-        <div class="row">
-          <button class="btn" id="playAgain">🔁 Play again</button>
-          <a class="link" href="index.html">Back to Home</a>
-        </div>
-      </div>
-    `;
-    overlay.style.display = 'grid';
-
-    document.getElementById('playAgain').addEventListener('click', () => {
-      // restore overlay content for next time
-      overlay.innerHTML = `
-        <div class="card">
-          <h2>3 misses and you’re done</h2>
-          <p>Miss = Flynn appears and disappears without getting whacked.<br>Clicks on the grass don’t count.</p>
-          <div class="row">
-            <button class="btn" id="overlayStart">▶️ Start Game</button>
-            <a class="link" href="index.html">Back to Home</a>
-          </div>
-        </div>
-      `;
-      document.getElementById('overlayStart').addEventListener('click', startGame);
-      resetGame();
-      startGame();
-    });
-  }
-
-  // ====== Whack handling ======
-  flynn.addEventListener('click', (e) => {
-    if (!running || paused) return;
-    if (!flynn.classList.contains('show')) return;
-
-    currentPopupWhacked = true;
-    score += 1;
-    scoreEl.textContent = score;
-
-    setToast(`Whacked! Score: ${score}`, 'good');
-
-    // Immediately hide and schedule next
-    flynn.classList.remove('show');
-    clearTimeout(hideTimer);
-    scheduleNext();
-  });
-
-  // ====== Wire up buttons ======
-  overlayStart.addEventListener('click', startGame);
-  startBtn.addEventListener('click', startGame);
-  pauseBtn.addEventListener('click', pauseGame);
-  resetBtn.addEventListener('click', resetGame);
-
-  // init
-  renderLives();
+document.getElementById("startBtn").onclick=startGame;
+document.getElementById("resetBtn").onclick=()=>location.reload();
+document.getElementById("overlayStart").onclick=startGame;
 </script>
 
 </body>
