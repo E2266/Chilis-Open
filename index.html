@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chili’s Open</title>
 
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+
 <style>
 :root{
   --fg:#f5f7fb;
@@ -243,9 +246,9 @@ h1{margin:0;font-size:40px}
       <a class="btn" href="supporters.html">🌶️ Supporters</a>
     </div>
 
-    <div class="teaser" id="teaser">
+    <div class="teaser" id="teaser" role="button" tabindex="0" aria-label="Play teaser video">
       <div class="thumb">
-        <div class="playBtn"><div class="playIcon"></div></div>
+        <div class="playBtn" aria-hidden="true"><div class="playIcon"></div></div>
       </div>
       <div class="teaserLabel">▶ Watch Teaser</div>
     </div>
@@ -254,10 +257,10 @@ h1{margin:0;font-size:40px}
 
 <!-- Modal -->
 <div class="modal" id="modal">
-  <div class="modalCard">
+  <div class="modalCard" role="dialog" aria-modal="true" aria-label="Teaser video player">
     <div class="modalTop">
       <strong>Chili’s Open Teaser</strong>
-      <button class="closeBtn" id="closeBtn">✕ Close</button>
+      <button class="closeBtn" id="closeBtn" type="button">✕ Close</button>
     </div>
     <div class="playerWrap" id="playerMount"></div>
   </div>
@@ -273,37 +276,53 @@ const TAGLINES=[
 document.getElementById("tagline").textContent =
   TAGLINES[Math.floor(Math.random()*TAGLINES.length)];
 
-// Countdown
+// Countdown target: May 22, 2026 @ 9:00 AM (viewer’s local time)
 const TARGET = new Date("2026-05-22T09:00:00");
 function tick(){
   const now=new Date();
   let d=Math.max(0,TARGET-now);
   const s=Math.floor(d/1000);
   days.textContent=Math.floor(s/86400);
-  hours.textContent=String(Math.floor(s%86400/3600)).padStart(2,"0");
-  mins.textContent=String(Math.floor(s%3600/60)).padStart(2,"0");
+  hours.textContent=String(Math.floor((s%86400)/3600)).padStart(2,"0");
+  mins.textContent=String(Math.floor((s%3600)/60)).padStart(2,"0");
   secs.textContent=String(s%60).padStart(2,"0");
 }
 tick(); setInterval(tick,1000);
 
-// Modal logic
+// Modal video player
 const VIDEO_ID="UQmpPK5EruI";
 const modal=document.getElementById("modal");
 const mount=document.getElementById("playerMount");
+const teaser=document.getElementById("teaser");
+const closeBtn=document.getElementById("closeBtn");
 
-document.getElementById("teaser").onclick=()=>{
-  mount.innerHTML=
+function openModal(){
+  mount.innerHTML =
     `<iframe src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&rel=0"
-      allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      title="Chili’s Open Teaser"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen></iframe>`;
   modal.classList.add("open");
   document.body.style.overflow="hidden";
-};
-document.getElementById("closeBtn").onclick=()=>{
+}
+function closeModal(){
   modal.classList.remove("open");
   mount.innerHTML="";
   document.body.style.overflow="";
-};
-modal.onclick=(e)=>{ if(e.target===modal) closeBtn.click(); };
+}
+
+teaser.addEventListener("click", openModal);
+teaser.addEventListener("keydown", (e) => {
+  if(e.key==="Enter" || e.key===" "){
+    e.preventDefault();
+    openModal();
+  }
+});
+closeBtn.addEventListener("click", closeModal);
+modal.addEventListener("click", (e) => { if(e.target===modal) closeModal(); });
+document.addEventListener("keydown", (e) => {
+  if(e.key==="Escape" && modal.classList.contains("open")) closeModal();
+});
 </script>
 
 </body>
