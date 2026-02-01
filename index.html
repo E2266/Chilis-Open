@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chili’s Open</title>
+  <style>
+    :root{
+      --bg:#0b0b0e; --fg:#f5f7fb;
+      --card:rgba(255,255,255,.06);
+      --border:rgba(255,255,255,.14);
+      --accent:#7dd3fc;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:radial-gradient(1200px 800px at 50% 30%, rgba(125,211,252,.08), transparent 60%), var(--bg);
+      color:var(--fg);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background:rgba(11,11,14,.75);
+      border-bottom:1px solid var(--border);
+    }
+    .bar{
+      max-width:1100px; margin:0 auto; padding:12px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .logo{font-weight:900; letter-spacing:.3px}
+    nav{display:flex; gap:10px; flex-wrap:wrap}
+    a.nav{
+      color:var(--fg); text-decoration:none; font-weight:700; font-size:14px;
+      padding:8px 10px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    a.nav:hover{border-color:rgba(255,255,255,.22)}
+    main{max-width:1100px; margin:0 auto; padding:26px 16px 40px}
+    .hero{
+      display:grid; gap:14px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+    }
+    h1{margin:0; font-size:40px; line-height:1.05}
+    p{margin:0; opacity:.85; line-height:1.45}
+    .countdown{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width:700px){
+      h1{font-size:34px}
+      .countdown{grid-template-columns: repeat(2, minmax(0,1fr))}
+    }
+    .tile{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:12px;
+      text-align:center;
+    }
+    .num{font-size:30px; font-weight:900}
+    .lbl{font-size:12px; opacity:.75; font-weight:700; letter-spacing:.6px; text-transform:uppercase}
+    .ctaRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+    .btn{
+      display:inline-block;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:800;
+      text-decoration:none;
+      color:var(--fg);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .btn:hover{border-color:rgba(255,255,255,.24)}
+    .sub{
+      font-size:14px;
+      opacity:.8;
+    }
+    .tagline{
+      margin-top:6px;
+      font-weight:700;
+      color:rgba(245,247,251,.9);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="logo">Chili’s Open 🌶️⛳️</div>
+    <nav>
+      <a class="nav" href="game.html">Whack a Flynn</a>
+      <a class="nav" href="players.html">Meet the Players</a>
+      <a class="nav" href="rules.html">Rules</a>
+      <a class="nav" href="supporters.html">Supporters</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>The Chili’s Open</h1>
+      <p class="sub">A completely unofficial tournament with extremely official vibes.</p>
+      <p class="tagline" id="tagline">Loading hype…</p>
+    </div>
+
+    <div class="countdown" aria-label="countdown">
+      <div class="tile"><div class="num" id="days">--</div><div class="lbl">Days</div></div>
+      <div class="tile"><div class="num" id="hours">--</div><div class="lbl">Hours</div></div>
+      <div class="tile"><div class="num" id="mins">--</div><div class="lbl">Minutes</div></div>
+      <div class="tile"><div class="num" id="secs">--</div><div class="lbl">Seconds</div></div>
+    </div>
+
+    <div class="ctaRow">
+      <a class="btn" href="game.html">🎮 Play Whack a Flynn</a>
+      <a class="btn" href="players.html">🏌️ Meet the Players</a>
+      <a class="btn" href="rules.html">📜 Official Rules</a>
+      <a class="btn" href="supporters.html">🌶️ Supporters</a>
+    </div>
+
+    <p class="sub">Next up: we’ll embed your teaser video right here.</p>
+  </section>
+</main>
+
+<script>
+  // 1) Set your tournament date/time here (America/New_York)
+  // Example: June 15, 2026 at 9:00 AM local time
+  const TOURNAMENT_ISO_LOCAL = "2026-06-15T09:00:00";
+
+  const el = (id) => document.getElementById(id);
+
+  const taglines = [
+    "Time until the first questionable tee shot.",
+    "Not PGA sanctioned. Spiritually sanctioned.",
+    "Golf. Margaritas. Regret.",
+    "Accuracy optional. Confidence required.",
+    "Hydration station: salsa."
+  ];
+  el("tagline").textContent = taglines[Math.floor(Math.random() * taglines.length)];
+
+  function tick(){
+    const target = new Date(TOURNAMENT_ISO_LOCAL);
+    const now = new Date();
+    let diff = target - now;
+
+    if (diff < 0) diff = 0;
+
+    const s = Math.floor(diff / 1000);
+    const days = Math.floor(s / 86400);
+    const hours = Math.floor((s % 86400) / 3600);
+    const mins = Math.floor((s % 3600) / 60);
+    const secs = s % 60;
+
+    el("days").textContent = String(days);
+    el("hours").textContent = String(hours).padStart(2,"0");
+    el("mins").textContent = String(mins).padStart(2,"0");
+    el("secs").textContent = String(secs).padStart(2,"0");
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+
+</body>
+</html>
