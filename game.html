@@ -21,7 +21,6 @@ body{
   min-height:100vh;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   color:var(--fg);
-
   background:
     radial-gradient(900px 500px at 50% 20%, rgba(255,90,90,.10), transparent 60%),
     radial-gradient(1200px 700px at 50% 85%, rgba(34,197,94,.18), transparent 65%),
@@ -115,13 +114,24 @@ main{
   user-select:none;
   opacity:0;
   transform:translate(-50%,-50%) scale(.9);
-  transition:.12s ease;
+  transition:opacity .12s ease, transform .12s ease;
   touch-action:manipulation;
 }
 
 .flynn.show{
   opacity:1;
   transform:translate(-50%,-50%) scale(1);
+}
+
+/* Hit animation */
+.flynn.hit{
+  animation: hit .18s ease-out;
+}
+
+@keyframes hit{
+  0%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(.85)}
+  100%{transform:translate(-50%,-50%) scale(1.1)}
 }
 
 .flynn img{
@@ -159,7 +169,7 @@ main{
   font-weight:700;
 }
 
-/* Shake */
+/* Shake on miss */
 @keyframes shake{
   0%{transform:translateX(0)}
   25%{transform:translateX(-6px)}
@@ -179,6 +189,7 @@ main{
     <div class="hud">
       <div class="pill">Score: <span id="score">0</span></div>
       <div class="pill">Lives: <span id="lives">❤️❤️❤️</span></div>
+      <button id="soundBtn" title="Toggle sound">🔇</button>
       <button id="startBtn">Start</button>
       <button id="resetBtn">Reset</button>
     </div>
@@ -204,6 +215,10 @@ main{
   <div class="toast" id="toast"></div>
 </main>
 
+<!-- Sounds (WAV) -->
+<audio id="hitSound" src="assets/sounds/hit.wav" preload="auto"></audio>
+<audio id="missSound" src="assets/sounds/miss.wav" preload="auto"></audio>
+
 <script>
 const flynn = document.getElementById("flynn");
 const arena = document.getElementById("arena");
@@ -212,6 +227,11 @@ const livesEl = document.getElementById("lives");
 const toast = document.getElementById("toast");
 const overlay = document.getElementById("overlay");
 
+const hitSound = document.getElementById("hitSound");
+const missSound = document.getElementById("missSound");
+const soundBtn = document.getElementById("soundBtn");
+
+let soundOn = false; // default OFF
 let score = 0;
 let lives = 3;
 let running = false;
@@ -220,12 +240,11 @@ let showTimer, hideTimer;
 
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-/* Difficulty curve:
-   0–19 easy
-   20–59 sweaty
-   60–99 very sweaty
-   100+ chaos
-*/
+// Difficulty curve:
+// 0–19 easy
+// 20–59 sweaty
+// 60–99 very sweaty
+// 100+ chaos
 function difficultyParams(){
   const s = score;
   let visibleMs, gapMs;
@@ -251,16 +270,32 @@ function difficultyParams(){
 }
 
 function updateLives(){
-  livesEl.textContent = "❤️❤️❤️".slice(0,lives*2);
+  // keeps it simple and readable
+  livesEl.textContent = lives === 3 ? "❤️❤️❤️" : lives === 2 ? "❤️❤️" : lives === 1 ? "❤️" : "";
+}
+
+function setToast(msg, kind){
+  toast.textContent = msg;
+  toast.style.color = kind === "good" ? "var(--good)" : kind === "bad" ? "var(--bad)" : "var(--fg)";
 }
 
 function randomPos(){
   const r = arena.getBoundingClientRect();
-  const pad = 90;
+  const pad = 90; // keep away from edges
   return {
-    x: pad + Math.random()*(r.width-pad*2),
-    y: pad + Math.random()*(r.height-pad*2)
+    x: pad + Math.random()*(r.width - pad*2),
+    y: pad + Math.random()*(r.height - pad*2)
   };
+}
+
+function playSound(audioEl){
+  if(!soundOn) return;
+  try{
+    audioEl.currentTime = 0;
+    audioEl.play();
+  }catch(e){
+    // iOS can block if user hasn't interacted — Start button counts as interaction
+  }
 }
 
 function showFlynn(){
@@ -270,68 +305,109 @@ function showFlynn(){
   const {visibleMs} = difficultyParams();
   const {x,y} = randomPos();
 
-  flynn.style.left = x+"px";
-  flynn.style.top = y+"px";
+  flynn.style.left = x + "px";
+  flynn.style.top  = y + "px";
   flynn.classList.add("show");
 
   hideTimer = setTimeout(()=>{
     flynn.classList.remove("show");
+
+    // Option A miss: only if it disappeared without being whacked
     if(!whacked){
       lives--;
       updateLives();
+
       arena.classList.add("shake");
-      setTimeout(()=>arena.classList.remove("shake"),250);
-      toast.textContent = "Missed!";
-      toast.style.color = "var(--bad)";
-      if(lives<=0){endGame();return;}
+      setTimeout(()=>arena.classList.remove("shake"), 250);
+
+      setToast("Missed!", "bad");
+      playSound(missSound);
+
+      if(lives <= 0){
+        endGame();
+        return;
+      }
     }
+
     scheduleNext();
-  },visibleMs);
+  }, visibleMs);
 }
 
 function scheduleNext(){
+  if(!running) return;
   const {gapMs} = difficultyParams();
-  showTimer = setTimeout(showFlynn,gapMs);
+  showTimer = setTimeout(showFlynn, gapMs);
 }
 
 function startGame(){
-  score=0; lives=3;
-  scoreEl.textContent=0;
+  // reset state
+  score = 0;
+  lives = 3;
+  running = true;
+
+  scoreEl.textContent = "0";
   updateLives();
-  toast.textContent="";
-  overlay.style.display="none";
-  running=true;
+  setToast("", "");
+
+  overlay.style.display = "none";
+
+  // Pre-warm audio on iOS after a user gesture (Start click)
+  // This reduces delay when the first sound plays.
+  // If sound is off, no big deal.
+  hitSound.load();
+  missSound.load();
+
   scheduleNext();
 }
 
 function endGame(){
-  running=false;
+  running = false;
   clearTimeout(showTimer);
   clearTimeout(hideTimer);
+  flynn.classList.remove("show");
+
   overlay.innerHTML = `
     <div class="card">
       <h2>Game Over</h2>
       <p>Final Score: <strong>${score}</strong></p>
       <button onclick="location.reload()">🔁 Play Again</button>
-    </div>`;
-  overlay.style.display="grid";
+    </div>
+  `;
+  overlay.style.display = "grid";
 }
 
-flynn.addEventListener("click",()=>{
-  if(!running || !flynn.classList.contains("show")) return;
-  whacked=true;
+flynn.addEventListener("click", ()=>{
+  if(!running) return;
+  if(!flynn.classList.contains("show")) return;
+
+  whacked = true;
   score++;
-  scoreEl.textContent=score;
-  toast.textContent="Whacked!";
-  toast.style.color="var(--good)";
+  scoreEl.textContent = String(score);
+
+  // hit feedback
+  setToast("Whacked!", "good");
+  flynn.classList.add("hit");
+  setTimeout(()=>flynn.classList.remove("hit"), 160);
+
+  playSound(hitSound);
+
+  // hide immediately, then schedule next
   flynn.classList.remove("show");
   clearTimeout(hideTimer);
   scheduleNext();
 });
 
-document.getElementById("startBtn").onclick=startGame;
-document.getElementById("resetBtn").onclick=()=>location.reload();
-document.getElementById("overlayStart").onclick=startGame;
+soundBtn.addEventListener("click", ()=>{
+  soundOn = !soundOn;
+  soundBtn.textContent = soundOn ? "🔊" : "🔇";
+});
+
+document.getElementById("startBtn").addEventListener("click", startGame);
+document.getElementById("overlayStart").addEventListener("click", startGame);
+document.getElementById("resetBtn").addEventListener("click", ()=>location.reload());
+
+// init
+updateLives();
 </script>
 
 </body>
