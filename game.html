@@ -103,8 +103,8 @@ main{
 /* Flynn */
 .flynn{
   position:absolute;
-  width:120px;
-  height:120px;
+  width:140px;
+  height:140px;
   border-radius:24px;
   display:grid;
   place-items:center;
@@ -124,8 +124,12 @@ main{
   transform:translate(-50%,-50%) scale(1);
 }
 
-.flynn span{
-  font-size:48px;
+.flynn img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:20px;
+  pointer-events:none;
 }
 
 /* Overlay */
@@ -184,7 +188,7 @@ main{
 <main>
   <div class="arena" id="arena">
     <div class="flynn" id="flynn">
-      <span>🧑‍🦲</span>
+      <img src="assets/images/flynn.jpg" alt="Flynn">
     </div>
 
     <div class="overlay" id="overlay">
@@ -216,6 +220,12 @@ let showTimer, hideTimer;
 
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
+/* Difficulty curve:
+   0–19 easy
+   20–59 sweaty
+   60–99 very sweaty
+   100+ chaos
+*/
 function difficultyParams(){
   const s = score;
   let visibleMs, gapMs;
@@ -246,7 +256,7 @@ function updateLives(){
 
 function randomPos(){
   const r = arena.getBoundingClientRect();
-  const pad = 80;
+  const pad = 90;
   return {
     x: pad + Math.random()*(r.width-pad*2),
     y: pad + Math.random()*(r.height-pad*2)
